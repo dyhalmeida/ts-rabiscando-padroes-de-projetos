@@ -1,4 +1,5 @@
-export class Gateway {
+import { IGateway } from "../interface/gateway"
+export class Gateway implements IGateway {
 
   collect(value: number): boolean {
     

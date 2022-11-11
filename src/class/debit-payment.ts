@@ -1,11 +1,5 @@
-import { Gateway } from "./gateway"
-
-export class DebitPayment {
-
-  constructor(private value: number,  private gateway: Gateway) {
-    this.value = value
-    this.gateway = gateway
-  }
+import { Payment } from "./payment"
+export class DebitPayment extends Payment {
 
   calculateRate(): number {
     return 4
@@ -13,11 +7,6 @@ export class DebitPayment {
 
   calculateDiscount(): number {
       return this.value * 0.05
-  }
-
-  applyCollect(): boolean {
-    const value = this.value + this.calculateRate() - this.calculateDiscount()
-    return this.gateway.collect(value)
   }
 
 }
