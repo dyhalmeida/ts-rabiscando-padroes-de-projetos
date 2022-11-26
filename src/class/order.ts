@@ -1,43 +1,67 @@
+import { State } from '../interface/state'
+import { AwaitingPayment } from './awaiting-payment'
+import { Canceled } from './canceled'
+import { Payment } from './payment'
+import { Sent } from './sent'
 export class Order {
 
-  private awaitingPayment = 1
-  private payment = 2
-  private canceled = 3
-  private sent = 4
-
-  private state: number 
+  private awaitingPayment: State
+  private payment: State
+  private canceled: State
+  private sent: State
+  private state: State
 
   constructor() {
+    this.awaitingPayment = new AwaitingPayment(this)
+    this.payment = new Payment(this)
+    this.canceled = new Canceled(this)
+    this.sent = new Sent(this)
+
     this.state = this.awaitingPayment
   }
 
   successWhenPaying() {
-    if (this.state === this.awaitingPayment) {
-      this.state = this.payment
-      return
+    try {
+      this.state.successWhenPaying()
+    } catch (error) {
+      console.error((error as Error).message)
     }
-    throw new Error('The order is awaiting payment');
   }
 
   cancelOrder() {
-    if (this.state === this.awaitingPayment) {
-      this.state = this.canceled
-      return
+    try {
+      this.state.cancelOrder()
+    } catch (error) {
+      console.error((error as Error).message)
     }
-    if (this.state === this.payment) {
-      this.state = this.canceled
-      return
-    }
-    throw new Error('The order cannot be canceled')
   }
 
   dispatchOrder() {
-    if(this.state === this.payment) {
-      this.state = this.sent
-      return
+    try {
+      this.state.dispatchOrder()
+    } catch (error) {
+      console.error((error as Error).message)
     }
+  }
 
-    throw new Error('The order is canceled')
+  getAwaitingPayment(): State {
+    return this.awaitingPayment
+  }
+
+  getPayment(): State {
+    return this.payment
+  }
+
+  getCanceled(): State {
+    return this.canceled
+  }
+
+  getSent(): State {
+    return this.sent
+  }
+
+  setState(state: State): void {
+    this.state = state
   }
 
 }
